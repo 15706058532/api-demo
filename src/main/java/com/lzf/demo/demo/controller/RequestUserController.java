@@ -2,6 +2,7 @@ package com.lzf.demo.demo.controller;
 
 import com.lzf.code.annatation.LzfApiDescribe;
 import com.lzf.code.annatation.LzfApiDescribe;
+import com.lzf.code.annatation.LzfApiRequest;
 import com.lzf.demo.demo.req.TestReq;
 import com.lzf.demo.demo.req.TestUserReq;
 import com.lzf.demo.demo.req.UserReq;
@@ -61,7 +62,7 @@ public class RequestUserController {
      */
     @LzfApiDescribe("多个uri,位置不同参数名不同参数使用指定名称")
     @GetMapping("/url/{idd}/{name}/{name}")
-    public String testFunction2(@PathVariable(value = "idd") @LzfApiDescribe("主键Id") String id, @LzfApiDescribe("名称")@PathVariable(value = "name") String name) {
+    public String testFunction2(@PathVariable(value = "idd") @LzfApiDescribe("主键Id") String id, @LzfApiDescribe("名称") @PathVariable(value = "name") String name) {
         logger.debug("接收的参数{}", id);
         logger.debug("接收的参数{}", name);
         return id;
@@ -110,8 +111,9 @@ public class RequestUserController {
     /**
      * http://localhost:8080/user/form_data/testUserReq?aLong=1&aBoolean=true
      */
-    @LzfApiDescribe("form_data参数为TestUserReq")
+    @LzfApiDescribe("form_data参数为TestUserReq LzfApiRequest=musts,noMusts")
     @GetMapping("/form_data/testUserReq")
+    @LzfApiRequest(musts = {"aLong", "anInt", "aShort"}, noMusts = {"longs", "ings", "shorts"})
     public TestUserReq testFunction7(TestUserReq testUserReq) {
         System.out.println(testUserReq);
         return testUserReq;
@@ -119,6 +121,7 @@ public class RequestUserController {
 
     @LzfApiDescribe("form_data参数为TestUserReq,TestReq")
     @GetMapping("/form_data/testUserReq/testReq")
+    @LzfApiRequest(musts = {"aLong", "anInt", "aShort"}, noMusts = {"*"})
     public TestUserReq testFunction7(TestUserReq testUserReq, TestReq testReq) {
         System.out.println(testUserReq);
         System.out.println(testReq);
@@ -149,8 +152,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq
      * {"aLong":1,"aShort":4}
      */
-    @LzfApiDescribe("json参数为TestUserReq")
+    @LzfApiDescribe("json参数为TestUserReq LzfApiRequest=noMusts")
     @GetMapping("/json/userReq")
+    @LzfApiRequest(noMusts = {"id", "username", "password"})
     public UserReq testFunction10(@RequestBody UserReq userReq) {
         System.out.println(userReq);
         return userReq;
@@ -160,8 +164,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq/array
      * [{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":3,"aShort":4}]
      */
-    @LzfApiDescribe("json参数为TestUserReq数组")
+    @LzfApiDescribe("json参数为TestUserReq数组  @LzfApiRequest(musts = {\"aLong\", \"anInt\", \"aShort\"},noMusts = {\"*\"})")
     @GetMapping("/json/testUserReq/array")
+    @LzfApiRequest(musts = {"aLong", "anInt", "aShort"},noMusts = {"*"})
     public TestUserReq[] testFunction10(@RequestBody TestUserReq[] testUserReq) {
         System.out.println(Arrays.toString(testUserReq));
         return testUserReq;
@@ -171,8 +176,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq/list
      * [{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":7,"aShort":4}]
      */
-    @LzfApiDescribe("json参数为TestUserReqList")
+    @LzfApiDescribe("json参数为TestUserReqList  LzfApiRequest=musts")
     @GetMapping("/json/testUserReq/list")
+    @LzfApiRequest(musts = {"aLong", "anInt", "aShort"})
     public List<TestUserReq> testFunction11(@RequestBody List<TestUserReq> testUserReqs) {
         System.out.println(testUserReqs);
         return testUserReqs;
@@ -185,8 +191,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq/array/array
      * [[{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":7,"aShort":4}],[{"aLong":1,"aShort":4},{"aLong":4,"aShort":4},{"aLong":9,"aShort":4}]]
      */
-    @LzfApiDescribe("json参数为TestUserReq数组数组")
+    @LzfApiDescribe("json参数为TestUserReq数组数组   LzfApiRequest()")
     @GetMapping("/json/testUserReq/array/array")
+    @LzfApiRequest()
     public TestUserReq[][] testFunction12(@RequestBody TestUserReq[][] testUserReq) {
         System.out.println(Arrays.toString(testUserReq));
         return testUserReq;
@@ -196,8 +203,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq/list/list
      * [[{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":7,"aShort":4}],[{"aLong":1,"aShort":4},{"aLong":4,"aShort":4},{"aLong":9,"aShort":4}]]
      */
-    @LzfApiDescribe("json参数为TestUserReqListList")
+    @LzfApiDescribe("json参数为TestUserReqListList @LzfApiRequest(musts = {\"*\"})")
     @GetMapping("/json/testUserReq/list/list")
+    @LzfApiRequest(musts = {"*"})
     public List<List<TestUserReq>> testFunction12(@RequestBody List<List<TestUserReq>> testUserReqs) {
         System.out.println(testUserReqs);
         return testUserReqs;
@@ -207,8 +215,9 @@ public class RequestUserController {
      * http://localhost:8080/user/json/testUserReq/collection/list/list
      * [[[{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":7,"aShort":4}],[{"aLong":1,"aShort":4},{"aLong":4,"aShort":4},{"aLong":9,"aShort":4}]],[[{"aLong":1,"aShort":4},{"aLong":2,"aShort":4},{"aLong":7,"aShort":4}],[{"aLong":1,"aShort":4},{"aLong":4,"aShort":4},{"aLong":9,"aShort":4}]]]
      */
-    @LzfApiDescribe("json参数为TestUserReqCollectionListList")
+    @LzfApiDescribe("json参数为TestUserReqCollectionListList   @LzfApiRequest(noMusts = {\"*\"})")
     @GetMapping("/json/testUserReq/collection/list/list")
+    @LzfApiRequest(noMusts = {"*"})
     public Collection<List<List<TestUserReq>>> testFunction12(@RequestBody Collection<List<List<TestUserReq>>> testUserReqs) {
         System.out.println(testUserReqs);
         return testUserReqs;
@@ -218,8 +227,9 @@ public class RequestUserController {
      * http://localhost:8080/user/many/20/www/testUserReq/testReq/testUserReq?aFloat=1.111&password=dddddd
      * {"aLong":4,"aShort":4}
      */
-    @LzfApiDescribe("url，json,from-data形式的参数为id，userReq，testReq，testUserReq")
-    @GetMapping("/many/{id}/{name}/testUserReq/testReq/testUserReq")
+    @LzfApiDescribe("三种形式形式的参数为多种形式参数@LzfApiRequest(musts={\"*\"},noMusts={\"*\"})")
+    @GetMapping("/many/{id}/{name}/tUReq/tReq/tUReq")
+    @LzfApiRequest(musts = {"*"}, noMusts = {"*"})
     public TestUserReq testFunction13(@PathVariable(value = "id") Integer id, @PathVariable(value = "name") String name, TestUserReq userReq, TestReq testReq, @RequestBody TestUserReq testUserReq) {
         System.out.println(id);
         System.out.println(name);
@@ -228,4 +238,15 @@ public class RequestUserController {
         return testUserReq;
     }
 
+    /**
+     * http://localhost:8080/user/json/testUserReq
+     * {"aLong":1,"aShort":4}
+     */
+    @LzfApiDescribe("json参数为TestUserReq @LzfApiRequest(musts ={\"*\"},noMusts ={\"id\", \"username\", \"password\"})")
+    @GetMapping("/json/userReq2")
+    @LzfApiRequest(musts = {"*"}, noMusts = {"id", "username", "password"})
+    public UserReq testFunction14(@RequestBody UserReq userReq) {
+        System.out.println(userReq);
+        return userReq;
+    }
 }

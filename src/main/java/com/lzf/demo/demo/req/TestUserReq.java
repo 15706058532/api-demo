@@ -1,7 +1,6 @@
 package com.lzf.demo.demo.req;
 
 import com.lzf.code.annatation.LzfApiDescribe;
-import com.lzf.code.handler.BrandReq;
 
 import java.io.Serializable;
 import java.util.Collection;
